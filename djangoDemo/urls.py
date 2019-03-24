@@ -15,16 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from api import views   # 从api应用中导入views
-
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
-router.register(r'groups', views.GroupViewSet)
+from hello import views as hello_views  # 从 hello 应用中导入views模块
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('admin/', admin.site.urls),        # django自带
+    path('hello/', hello_views.hello),      # 转移到 hello.views 模块的hello函数
+    path('api/', include('api.urls')),      # 转移到 api.urls 模块
 ]
