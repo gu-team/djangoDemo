@@ -3,17 +3,16 @@
 '''
 
 from django.http import HttpResponse, JsonResponse
-# from . import gdbDemo
-# import os
+from gdbEntry import GdbDemo
+import os
 
 def start(request):
     print(request)
-    # os.system(r'echo "source ./gdbDemo.py" >> ~/.gdbinit')
-    # os.system('gdb')
-    # gdbCon = gdbDemo.GdbDemo()
-    # ret = gdbCon.start()
+    gdbCon = gdbEntry.GdbDemo()
+    ret = gdbCon.start()
+    print(ret)
     retMsg = {
         'code': 0,
-        'message': 'success'
+        'message': 'success',
     }
     return JsonResponse(retMsg)    # 返回一个json
