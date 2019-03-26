@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework import routers
-from . import views, gdbContr
+from . import views, gdbConn
 
 router = routers.DefaultRouter()
 
@@ -10,5 +10,5 @@ router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('start', gdbContr.start),      # 转到 gdbContr.py 中的 start 函数
+    path('start', gdbConn.start),      # 转到 gdbConn.py 中的 start 函数
 ]
