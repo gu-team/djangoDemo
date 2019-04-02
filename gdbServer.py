@@ -3,10 +3,15 @@ import gdb
 import socket
 
 class GdbServer():
-    fileName = 'demo.c'
+    fileName = 'demo'
+    def __init__(self):
+        print('GdbServer init')
+
     def start(self):
+        print('come in the start')
         gdb.execute('file ' + self.fileName)
         ret = gdb.execute('start', to_string=True)
+        print('GdbServer -- start --' + ret)
         return 'it is start return: ' + ret
 
     def contin(self):
@@ -19,8 +24,10 @@ def main():
 
     #创建一个socket对象，AF_INET指定使用IPv4协议(AF_INET6代表IPV6)，SOCK_STREAM指定使用面向流的TCP协议
     tcp_serve_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    tcp_serve_socket.bind(('127.0.01', 8001))   # 绑定本地ip和端口
+    tcp_serve_socket.bind(('127.0.0.1', 8001))   # 绑定本地ip和端口
     tcp_serve_socket.listen(128)                # 开始监听端口，数字表示等待连接的最大数量
+
+    gdbSer = GdbServer()
 
     # 循环目的：多次调用accept为多个客户服务
     while True:
@@ -33,7 +40,6 @@ def main():
             recv_data = tcp_client_socket.recv(1024).decode('utf-8')   # 从客户端接受消息，最多1024字节。recv_data为字节类型，.decode()将recv_data转化成字符型
             print('客户端发来的是%s' % recv_data)
 
-            gdbSer = GdbServer()
             retMsg = ''
             if recv_data == 'start':
                 print('send start to gdb')
@@ -43,16 +49,18 @@ def main():
                 retMsg = gdbSer.contin()
             else:
                 print('no this commond')
+            print(retMsg)
 
 			# 用if判断当前用户是否还有需求，若没有（及无接收数据recv_data堵塞）则break退出当前循环
-            if not recv_data:
-                break
+            # if not recv_data:
+            #    break
             tcp_client_socket.send(retMsg.encode('utf-8'))	# 将字符串进行字节编码
 
         # 关闭与客户端的连接
         tcp_client_socket.close()
         print('已经为该客户服务完毕')
 
+    del gdbSer
     tcp_serve_socket.close()
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ from socket import *
 from django.http import HttpResponse, JsonResponse
 import os
 
-HOST='localhost'
+HOST='127.0.01.1'
 PORT=8001
 BUFSIZ=1024
 ADDR=(HOST,PORT)
@@ -23,6 +23,6 @@ def start(request):
 
     retMsg = {
         'code': 0,
-        'message': 'success',
+        'message': resp_str,
     }
     return JsonResponse(retMsg)    # 返回一个json
