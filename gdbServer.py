@@ -2,12 +2,16 @@
 import gdb
 import socket
 
-class GdbDemo():
+class GdbServer():
     fileName = 'demo.c'
     def start(self):
         gdb.execute('file ' + self.fileName)
         ret = gdb.execute('start', to_string=True)
         return 'it is start return: ' + ret
+
+    def contin(self):
+        ret_str = gdb.execute('c', to_string=True)
+        return 'continue result:' + ret_str
 
 
 # TCP服务端
@@ -26,13 +30,24 @@ def main():
 
         # 循环目的：为同一个客户端服务多次
         while True:
-            recv_data = tcp_client_socket.recv(1024)   # 从客户端接受消息，最多1024字节。recv_data为字节类型
-            print('客户端发来的是%s' % recv_data.decode('utf-8'))		# 将recv_data转化成字符型
+            recv_data = tcp_client_socket.recv(1024).decode('utf-8')   # 从客户端接受消息，最多1024字节。recv_data为字节类型，.decode()将recv_data转化成字符型
+            print('客户端发来的是%s' % recv_data)
+
+            gdbSer = GdbServer()
+            retMsg = ''
+            if recv_data == 'start':
+                print('send start to gdb')
+                retMsg = gdbSer.start()
+            elif recv_data == 'continue':
+                print('send continue to gdb')
+                retMsg = gdbSer.contin()
+            else:
+                print('no this commond')
 
 			# 用if判断当前用户是否还有需求，若没有（及无接收数据recv_data堵塞）则break退出当前循环
             if not recv_data:
                 break
-            tcp_client_socket.send('hello welcome to gdb server'.encode('utf-8'))	# 将字符串进行字节编码
+            tcp_client_socket.send(retMsg.encode('utf-8'))	# 将字符串进行字节编码
 
         # 关闭与客户端的连接
         tcp_client_socket.close()
