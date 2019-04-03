@@ -11,4 +11,5 @@ router.register(r'groups', views.GroupViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('start', gdbConn.start),      # 转到 gdbConn.py 中的 start 函数
+    path('continue', gdbConn.contin),
 ]
