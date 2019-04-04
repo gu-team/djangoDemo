@@ -2,7 +2,7 @@
 import gdb
 import socket
 
-isStart = False
+loadFile = False
 
 class GdbServer():
     fileName = 'demo'
@@ -10,7 +10,7 @@ class GdbServer():
         print('GdbServer init')
 
     def start(self):
-        isStart = True
+        loadFile = True
         print('come in the start')
         ret1 = gdb.execute('file demo', to_string=True)
         print('file demo--->' + ret1)
@@ -20,7 +20,7 @@ class GdbServer():
 
     def contin(self):
         print('come in the contin')
-        if not isStart:
+        if not loadFile:
             return 'there is no file in gdb'
         ret_str = gdb.execute('c', to_string=True)
         print('continue--->' + ret_str)
@@ -67,7 +67,7 @@ def main():
         # 关闭与客户端的连接
         tcp_client_socket.close()
         print('已经为该客户服务完毕')
-        isStart = False
+        loadFile = False
 
     del gdbSer
     tcp_serve_socket.close()
